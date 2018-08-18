@@ -1,2 +1,5 @@
 # QGraphicsViewToQml
-将QGraphicsView添加到Qml上下文
+将的的QGraphicsView添加到上下文设为设为Qml
+通过qmlRegisterType <QQuickGraphicsview>（“na.qt.GraphicsView”，1,0，“GraphicsView”）;就可以将这个新的QQuickItem添加到qml程序中了
+原理是利用QQuickPaintedItem的油漆事件将QGraphcisView的显示打印出来
+事件通过信号调用来连接
