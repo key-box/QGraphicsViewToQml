@@ -1,4 +1,26 @@
 #include "qquickgraphicsview.h"
+Graphicsview_ne::Graphicsview_ne(QObject *parent){
+    this->setRenderHints(QPainter::Antialiasing|QPainter::TextAntialiasing|QPainter::SmoothPixmapTransform);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    fitInView(this->sceneRect(),Qt::IgnoreAspectRatio);
+
+    connect(time,SIGNAL(timeout()),this,SLOT(time_slot()));
+}
+void Graphicsview_ne::wheelscaleview(int p){
+    if(p>0)timescala = 1.09; else timescala =0.9;
+    time->start();
+    time->setInterval(20);
+}
+void Graphicsview_ne::time_slot(){
+    timer_interval += 1;
+    if(timer_interval >= 10){
+        timer_interval = 1;
+        time->stop();
+        return;
+    }
+    this->scale(timescala,timescala);
+}
 //--------------------------------------------------------
 QQuickGraphicsview::QQuickGraphicsview(QQuickItem * parent):
     QQuickPaintedItem(parent)
@@ -8,16 +30,9 @@ QQuickGraphicsview::QQuickGraphicsview(QQuickItem * parent):
     this->setAcceptedMouseButtons(Qt::AllButtons);
     this->setFlag(ItemAcceptsInputMethod, true);
 
-     graphics = new Graphicsview_ne(this);
-     timer = new QTimer(this);
+    graphics = new Graphicsview_ne(this);
+    timer = new QTimer(this);
 
-    connect(this,SIGNAL(mousePressEvent_signals(QMouseEvent*)),graphics,SLOT(mousePressEvent_slot(QMouseEvent*)));
-    connect(this,SIGNAL(mouseDoubleClickEvent_signals(QMouseEvent*)),graphics,SLOT(mouseDoubleClickEvent_slot(QMouseEvent*)));
-    connect(this,SIGNAL(mouseMoveEvent_signals(QMouseEvent*)),graphics,SLOT(mouseMoveEvent_slot(QMouseEvent*)));
-    connect(this,SIGNAL(mouseReleaseEvent_signals(QMouseEvent*)),graphics,SLOT(mouseReleaseEvent_slot(QMouseEvent*)));
-    connect(this,SIGNAL(wheelEvent_signals(QWheelEvent*)),graphics,SLOT(wheelEvent_slot(QWheelEvent*)));
-    connect(this,SIGNAL(keyPressEvent_signals(QKeyEvent*)),graphics,SLOT(keyPressEvent_slot(QKeyEvent*)));
-    connect(this,SIGNAL(keyReleaseEvent_signals(QKeyEvent*)),graphics,SLOT(keyReleaseEvent_slot(QKeyEvent*)));
     connect(timer,SIGNAL(timeout()),this,SLOT(timer_slot()));
 
     timer->start(28);
